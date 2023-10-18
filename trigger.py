@@ -10,7 +10,7 @@ def check_abort():
 
 
 def check_cleanup():
-    total, used, free = shutil.disk_usage(TORRENT_PATH)
+    total, used, free = shutil.disk_usage(TORRENT_DIR)
     if free < DISK_SPACE:
         return cleanup()
     else:

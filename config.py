@@ -4,7 +4,7 @@ DELETE_TORRENT = '/usr/bin/qbt torrent delete {HASH} --with-files'
 REANNOUNCE_TORRENT = '/usr/bin/qbt torrent reannounce {HASH}'
 
 NOTIFY_PATH = '/usr/bin/notify'
-TORRENT_PATH = '/mnt/hdd/BT'
+TORRENT_DIR = '/mnt/hdd/BT'
 
 # abort
 MAX_DONE = 0.1   # 10%
@@ -58,3 +58,5 @@ SEEDING_REQ = {
 
 # cleanup
 DISK_SPACE = 50 * GiB
+
+TORRENTS_CSV = '/mnt/hdd/BT/torrents.csv'

@@ -7,7 +7,7 @@ and not active
 import subprocess
 from config import *
 from session import logger
-from common import get_torrents, get_torrents_by_category, get_torrents_by_tag
+from common import get_torrents, get_torrents_by_category, get_torrents_by_tag, write_torrent_info
 
 
 def meet_req(torrent):
@@ -40,11 +40,13 @@ def cleanup():
 
     if to_cleanup:
         for torrent in to_cleanup:
-            subprocess.run(REANNOUNCE_TORRENT.format(HASH=torrent['hash']).split())
-            subprocess.run(DELETE_TORRENT.format(HASH=torrent['hash']).split())
-            message = 'Torrent `{}` cleaned up'.format(torrent['name'])
-            logger.warning(message)
-            # subprocess.run(NOTIFY.format(MESSAGE=message).split())
-            subprocess.run([NOTIFY_PATH, message])
+            if not torrent['upspeed']:
+                subprocess.run(REANNOUNCE_TORRENT.format(HASH=torrent['hash']).split())
+                write_torrent_info(torrent)
+                subprocess.run(DELETE_TORRENT.format(HASH=torrent['hash']).split())
+                message = 'Torrent `{}` cleaned up'.format(torrent['name'])
+                logger.warning(message)
+                # subprocess.run(NOTIFY.format(MESSAGE=message).split())
+                subprocess.run([NOTIFY_PATH, message])
 
     return to_cleanup
