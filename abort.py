@@ -35,6 +35,6 @@ def abort():
             message = 'Torrent `{}` aborted'.format(torrent['name'])
             logger.warning(message)
             # subprocess.run(NOTIFY.format(MESSAGE=message).split())
-            subprocess.run([NOTIFY_PATH, message])
+            # subprocess.run([NOTIFY_PATH, message])
 
     return to_abort

@@ -2,7 +2,8 @@ import shutil
 from config import *
 from abort import abort
 from session import logger
-from cleanup import cleanup
+from dead import clean_dead
+from obsolete import cleanup
 
 
 def check_abort():
@@ -15,3 +16,7 @@ def check_cleanup():
         return cleanup()
     else:
         return logger.debug('Disk space is enough: {} GiB'.format(free / GiB))
+
+
+def check_dead():
+    return clean_dead()

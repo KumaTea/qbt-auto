@@ -10,7 +10,7 @@ from session import logger
 from common import get_torrents, get_torrents_by_category, get_torrents_by_tag, write_torrent_info
 
 
-def meet_req(torrent):
+def meet_obsolete_req(torrent):
     for key, value in SEEDING_REQ.items():
         if value['range_min'] <= torrent['size'] < value['range_max']:
             if torrent['seeding_time'] > value['required']:
@@ -35,7 +35,7 @@ def cleanup():
     for torrent in torrents:
         if torrent['progress'] == 1:
             if torrent['upspeed'] == 0:
-                if meet_req(torrent):
+                if meet_obsolete_req(torrent):
                     to_cleanup.append(torrent)
 
     if to_cleanup:
@@ -47,6 +47,6 @@ def cleanup():
                 message = 'Torrent `{}` cleaned up'.format(torrent['name'])
                 logger.warning(message)
                 # subprocess.run(NOTIFY.format(MESSAGE=message).split())
-                subprocess.run([NOTIFY_PATH, message])
+                # subprocess.run([NOTIFY_PATH, message])
 
     return to_cleanup

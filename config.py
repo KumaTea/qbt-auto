@@ -58,5 +58,6 @@ SEEDING_REQ = {
 
 # cleanup
 DISK_SPACE = 50 * GiB
+STALL_TIME = 1 * DAY
 
-TORRENTS_CSV = '/mnt/hdd/BT/torrents.csv'
+TORRENTS_CSV = '/home/dev/qbt/torrents.csv'
