@@ -11,8 +11,16 @@ from common import get_torrents, get_torrents_by_category, get_torrents_by_tag, 
 
 
 def meet_dead_req(torrent):
-    if torrent['progress'] < 0.01 and torrent['state'] == 'stalledDL':
-        if time.time() - torrent['added_on'] > STALL_TIME:
+    if torrent['state'] == 'stalledDL':
+        if all(
+            torrent['progress'] < 0.01,
+            time.time() - torrent['added_on'] > STALL_TIME
+        ):
+            return True
+        elif all(
+            torrent['progress'] < 0.1,
+            time.time() - torrent['added_on'] > STALL_TIME * 2
+        ):
             return True
     return False
 
