@@ -2,7 +2,7 @@ import os
 import csv
 import json
 import subprocess
-from config import *
+from config import TORRENTS_CSV, GET_TORRENTS_LIST
 
 
 def get_torrents():

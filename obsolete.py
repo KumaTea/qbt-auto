@@ -4,10 +4,11 @@ and not active
 """
 
 
+import shutil
 import subprocess
-from config import *
-from session import logger
-from common import get_torrents, get_torrents_by_category, get_torrents_by_tag, write_torrent_info
+from session import logging, tor
+from common import get_torrents_by_category, get_torrents_by_tag, write_torrent_info
+from config import CAT, GiB, TORRENT_DIR, DISK_SPACE, SEEDING_REQ, REANNOUNCE_TORRENT, DELETE_TORRENT
 
 
 def meet_obsolete_req(torrent):
@@ -19,9 +20,13 @@ def meet_obsolete_req(torrent):
 
 
 def cleanup():
+    total, used, free = shutil.disk_usage(TORRENT_DIR)
+    if free >= DISK_SPACE:
+        return logging.debug('Disk space is enough: {} GiB'.format(free / GiB))
+
     torrents = get_torrents_by_tag(
         get_torrents_by_category(
-            get_torrents(),
+            tor.get(),
             category=CAT
         ),
         tag=''
@@ -45,7 +50,7 @@ def cleanup():
                 write_torrent_info(torrent)
                 subprocess.run(DELETE_TORRENT.format(HASH=torrent['hash']).split())
                 message = 'Torrent `{}` cleaned up'.format(torrent['name'])
-                logger.warning(message)
+                logging.warning(message)
                 # subprocess.run(NOTIFY.format(MESSAGE=message).split())
                 # subprocess.run([NOTIFY_PATH, message])
 

@@ -14,6 +14,7 @@ MIN_DONE = 0.01  # 1%
 CAT = 'TJU'
 GiB = 1024 * 1024 * 1024
 DAY = 24 * 60 * 60
+REBOOT_INTERVAL = 1 * DAY
 
 SEEDING_REQ = {
     """
@@ -60,4 +61,4 @@ SEEDING_REQ = {
 DISK_SPACE = 50 * GiB
 STALL_TIME = 1 * DAY
 
-TORRENTS_CSV = '/home/dev/qbt/torrents.csv'
+TORRENTS_CSV = '/home/kuma/qbt/torrents.csv'
