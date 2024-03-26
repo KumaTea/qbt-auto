@@ -5,10 +5,9 @@ and not active
 
 
 import shutil
-import subprocess
-from session import logging, tor
+from session import logging, qbt
+from config import CAT, GiB, TORRENT_DIR, DISK_SPACE, SEEDING_REQ
 from common import get_torrents_by_category, get_torrents_by_tag, write_torrent_info
-from config import CAT, GiB, TORRENT_DIR, DISK_SPACE, SEEDING_REQ, REANNOUNCE_TORRENT, DELETE_TORRENT
 
 
 def meet_obsolete_req(torrent):
@@ -26,10 +25,10 @@ def cleanup():
 
     torrents = get_torrents_by_tag(
         get_torrents_by_category(
-            tor.get(),
+            qbt.torrents.info.all(),
             category=CAT
         ),
-        tag=''
+        tag=None
     )
 
     # 1. finished (torrent['progress'] == 1)
@@ -46,10 +45,12 @@ def cleanup():
     if to_cleanup:
         for torrent in to_cleanup:
             if not torrent['upspeed']:
-                subprocess.run(REANNOUNCE_TORRENT.format(HASH=torrent['hash']).split())
+                # subprocess.run(REANNOUNCE_TORRENT.format(HASH=torrent['hash']).split())
+                torrent.reannounce()
                 write_torrent_info(torrent)
-                subprocess.run(DELETE_TORRENT.format(HASH=torrent['hash']).split())
-                message = 'Torrent `{}` cleaned up'.format(torrent['name'])
+                # subprocess.run(DELETE_TORRENT.format(HASH=torrent['hash']).split())
+                torrent.delete(delete_files=True)
+                message = 'OBSOLETE\t: `{}`'.format(torrent['name'])
                 logging.warning(message)
                 # subprocess.run(NOTIFY.format(MESSAGE=message).split())
                 # subprocess.run([NOTIFY_PATH, message])

@@ -4,19 +4,18 @@ and has a share ratio lower than finish percentage
 """
 
 import time
-import subprocess
-from session import logging, tor
-from config import CAT, MIN_DONE, MAX_DONE, DELETE_TORRENT
+from session import logging, qbt
+from config import CAT, MIN_DONE, MAX_DONE
 from common import get_torrents_by_category, get_torrents_by_tag, write_torrent_info
 
 
 def abort():
     torrents = get_torrents_by_tag(
         get_torrents_by_category(
-            tor.get(),
+            qbt.torrents.info.all(),
             category=CAT
         ),
-        tag=''
+        tag=None
     )
 
     to_abort = []
@@ -32,8 +31,9 @@ def abort():
     if to_abort:
         for torrent in to_abort:
             write_torrent_info(torrent)
-            subprocess.run(DELETE_TORRENT.format(HASH=torrent['hash']).split())
-            message = 'Torrent `{}` aborted'.format(torrent['name'])
+            # subprocess.run(DELETE_TORRENT.format(HASH=torrent['hash']).split())
+            torrent.delete(delete_files=True)
+            message = 'ABORT\t: `{}`'.format(torrent['name'])
             logging.warning(message)
             # subprocess.run(NOTIFY.format(MESSAGE=message).split())
             # subprocess.run([NOTIFY_PATH, message])

@@ -1,33 +1,44 @@
 import os
 import csv
-import json
-import subprocess
-from config import TORRENTS_CSV, GET_TORRENTS_LIST
+from config import TORRENTS_CSV
+from qbittorrentapi.torrents import TorrentDictionary  # , TorrentInfoList
 
 
-def get_torrents():
-    process = subprocess.Popen(GET_TORRENTS_LIST.split(), stdout=subprocess.PIPE)
-    output, error = process.communicate()
-    return json.loads(output.decode('utf-8'))
+def get_torrents_by_category(torrents: list[TorrentDictionary], category: str = None) -> list[TorrentDictionary]:
+    """
+    Get torrents by category
+    if category is empty, return all torrents without category
+    """
+    filtered = []
+    if category:
+        for torrent in torrents:
+            if torrent['category'] == category:
+                filtered.append(torrent)
+    else:  # category is None
+        for torrent in torrents:
+            if not torrent['category']:
+                filtered.append(torrent)
+    return filtered
 
 
-def get_torrents_by_category(torrents: list, category: str):
-    for torrent in torrents:
-        if torrent['category'] == category:
-            yield torrent
-
-
-def get_torrents_by_tag(torrents: list, tag: str):
-    for torrent in torrents:
-        if tag:
+def get_torrents_by_tag(torrents: list[TorrentDictionary], tag: str = None) -> list[TorrentDictionary]:
+    """
+    Get torrents by tag
+    if tag is empty, return all torrents without tag
+    """
+    filtered = []
+    if tag:
+        for torrent in torrents:
             if tag in torrent['tags']:
-                yield torrent
-        else: # tag is ''
+                filtered.append(torrent)
+    else:  # tag is None
+        for torrent in torrents:
             if not torrent['tags']:
-                yield torrent
+                filtered.append(torrent)
+    return filtered
 
 
-def write_torrent_info(torrent: dict):
+def write_torrent_info(torrent: TorrentDictionary):
     if not os.path.isfile(TORRENTS_CSV):
         items = ['name', 'size', 'ratio', 'finished']
         with open(TORRENTS_CSV, 'w') as f:

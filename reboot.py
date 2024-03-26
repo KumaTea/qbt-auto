@@ -6,8 +6,8 @@ If all torrents are inactive, reboot the system
 
 import time
 import subprocess
-from session import logging, tor
-from config import REBOOT_INTERVAL
+from session import logging, qbt
+from config import REBOOT_INTERVAL, REBOOT_CMD, EXIT_QBT
 
 
 def get_uptime() -> float:
@@ -36,12 +36,12 @@ def reboot_on_stall():
     if uptime < REBOOT_INTERVAL:
         return logging.debug('Uptime {}s is less than threshold {}s'.format(int(uptime), REBOOT_INTERVAL))
 
-    torrents = tor.get()
+    torrents = qbt.torrents.info.all()
     states = [torrent['state'] for torrent in torrents]
     states = list(set(states))
 
     if all('stalled' in state for state in states):
-        logging.warning('All torrents are stalled. Rebooting...')
-        subprocess.run('sudo -s systemctl stop qbittorrent-nox@kuma', shell=True)
+        logging.warning('REBOOT\t: All torrents are stalled. Rebooting...')
+        subprocess.run(EXIT_QBT, shell=True)
         time.sleep(2)
-        return subprocess.run('sudo -s reboot', shell=True)
+        return subprocess.run(REBOOT_CMD, shell=True)

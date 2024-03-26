@@ -1,29 +1,21 @@
 import logging
-from datetime import datetime
+import configparser
+import qbittorrentapi
 from apscheduler.schedulers.blocking import BlockingScheduler
-from common import *
 
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
-    level=logging.INFO,
+    level=logging.WARNING,
     datefmt='%Y-%m-%d %H:%M:%S')
 
-
-class TorrentStore:
-    def __init__(self):
-        self.torrents: list[dict] = []
-        self.last_saved: datetime = datetime.now()
-        self.refresh()
-
-    def refresh(self):
-        self.torrents = get_torrents()
-
-    def get(self):
-        if (datetime.now() - self.last_saved).seconds > 30:
-            self.refresh()
-        return self.torrents
-
+config = configparser.ConfigParser()
+config.read('config.ini')
+qbt = qbittorrentapi.Client(
+    host=config['qbt']['host'],
+    port=config['qbt']['port'],
+    username=config['qbt']['username'],
+    password=config['qbt']['password']
+)
 
 scheduler = BlockingScheduler()
-tor = TorrentStore()

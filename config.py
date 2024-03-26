@@ -1,18 +1,15 @@
 # common
-GET_TORRENTS_LIST = '/usr/bin/qbt torrent list --format json'
-DELETE_TORRENT = '/usr/bin/qbt torrent delete {HASH} --with-files'
-REANNOUNCE_TORRENT = '/usr/bin/qbt torrent reannounce {HASH}'
 
 NOTIFY_PATH = '/usr/bin/notify'
 TORRENT_DIR = '/mnt/hdd/BT'
 
-# abort
-MAX_DONE = 0.1   # 10%
-MIN_DONE = 0.01  # 1%
+TORRENTS_CSV = '/home/kuma/qbt/torrents.csv'
 
 # TJU
 CAT = 'TJU'
-GiB = 1024 * 1024 * 1024
+KiB = 1024
+MiB = 1024 ** 2
+GiB = 1024 ** 3
 DAY = 24 * 60 * 60
 REBOOT_INTERVAL = 1 * DAY
 
@@ -57,8 +54,15 @@ SEEDING_REQ = {
     }
 }
 
+# abort
+MAX_DONE = 0.1  # 10%
+MIN_DONE = 0.01  # 1%
+
 # cleanup
 DISK_SPACE = 50 * GiB
 STALL_TIME = 1 * DAY
 
-TORRENTS_CSV = '/home/kuma/qbt/torrents.csv'
+# reboot
+
+EXIT_QBT = 'sudo -s systemctl stop qbittorrent-nox@kuma'
+REBOOT_CMD = 'sudo -s reboot'

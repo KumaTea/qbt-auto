@@ -1,1 +1,2 @@
 apscheduler
+qbittorrent-api
